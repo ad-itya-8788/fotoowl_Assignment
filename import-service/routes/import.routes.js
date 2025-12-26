@@ -26,6 +26,7 @@ function getFolderId(url)
 router.post("/google-drive", async (req, res) => {
   try {
     const { folderUrl } = req.body;
+    console.log("Import request received, folderUrl:", folderUrl);
 
     if (!folderUrl)
     {
@@ -33,6 +34,7 @@ router.post("/google-drive", async (req, res) => {
     }
 
     const folderId = getFolderId(folderUrl);
+    console.log("Extracted folderId:", folderId);
     if (!folderId)
     {
       return res.status(400).json({ error: "Invalid Google Drive folder URL" });

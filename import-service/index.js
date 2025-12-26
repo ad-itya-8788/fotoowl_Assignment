@@ -1,11 +1,13 @@
 const express = require("express");
 const path = require("path");
+const cors = require("cors");
 const { connectQueue } = require("./queue");
 
 const importRoutes = require("./routes/import.routes");
 const imagesRoutes = require("./routes/images.routes");
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 app.use("/import", importRoutes);
