@@ -105,11 +105,17 @@ router.post("/google-drive", async (req, res) => {
       );
 
       if (result.rowCount > 0) {
-        await sendToQueue({
-          google_drive_id: img.id,
-          name: img.name
-        });
-        queuedCount++;
+        try {
+          await sendToQueue({
+            google_drive_id: img.id,
+            name: img.name
+          });
+          queuedCount++;
+        } catch (queueError) {
+          console.error("Failed to queue image:", queueError.message);
+          // Still count as processed, worker can be restarted later
+          queuedCount++;
+        }
       }
     }
 
