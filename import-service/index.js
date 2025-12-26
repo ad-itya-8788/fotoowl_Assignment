@@ -19,11 +19,17 @@ app.get("/", (req, res) => {
 
 connectQueue()
   .then(() => {
-    app.listen(3000, () => {
-      console.log("Import service running on http://localhost:3000");
+    console.log("Connected to queue successfully");
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+      console.log(`Import service running on port ${port}`);
     });
   })
   .catch((err) => {
     console.error("Failed to connect to RabbitMQ:", err.message);
-    process.exit(1);
+    console.log("Starting server without queue connection...");
+    const port = process.env.PORT || 3000;
+    app.listen(port, () => {
+      console.log(`Import service running on port ${port} (without queue)`);
+    });
   });
