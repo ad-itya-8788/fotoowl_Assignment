@@ -26,7 +26,6 @@ function getFolderId(url)
 router.post("/google-drive", async (req, res) => {
   try {
     const { folderUrl } = req.body;
-    console.log("Import request received, folderUrl:", folderUrl);
 
     if (!folderUrl)
     {
@@ -34,7 +33,6 @@ router.post("/google-drive", async (req, res) => {
     }
 
     const folderId = getFolderId(folderUrl);
-    console.log("Extracted folderId:", folderId);
     if (!folderId)
     {
       return res.status(400).json({ error: "Invalid Google Drive folder URL" });
@@ -84,8 +82,6 @@ router.post("/google-drive", async (req, res) => {
       // Get next page token (null if no more pages)
       pageToken = response.data.nextPageToken;
 
-      console.log(`Page ${pageCount}: Fetched ${images.length} images (total so far: ${allImages.length})`);
-
       // Small delay to avoid rate limiting (only if there are more pages)
       if (pageToken) {
         await new Promise(resolve => setTimeout(resolve, 100));
@@ -130,8 +126,7 @@ router.post("/google-drive", async (req, res) => {
   } catch (err) {
     console.error("Import error:", err.message);
     if (err.response) {
-      console.error("API response status:", err.response.status);
-      console.error("API response data:", JSON.stringify(err.response.data, null, 2));
+      console.error("API status:", err.response.status);
     }
     res.status(500).json({ error: err.message });
   }
