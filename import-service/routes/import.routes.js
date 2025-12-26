@@ -9,8 +9,18 @@ const GOOGLE_API_KEY = process.env.GOOGLE_DRIVE_API_KEY;
 
 function getFolderId(url)
 {
-  const match = url.match(/folders\/([a-zA-Z0-9_-]+)/);
-  return match ? match[1] : null;
+  // Try different Google Drive URL patterns
+  const patterns = [
+    /folders\/([a-zA-Z0-9_-]+)/,
+    /\/d\/([a-zA-Z0-9_-]+)/,  // For file URLs, but sometimes used
+    /\?id=([a-zA-Z0-9_-]+)/
+  ];
+
+  for (const pattern of patterns) {
+    const match = url.match(pattern);
+    if (match) return match[1];
+  }
+  return null;
 }
 
 router.post("/google-drive", async (req, res) => {
@@ -50,7 +60,17 @@ router.post("/google-drive", async (req, res) => {
         timeout: 30000, // 30 second timeout
       });
 
+      // Check if API returned error
+      if (response.status !== 200) {
+        return res.status(400).json({ error: `Google Drive API error: ${response.status} ${response.statusText}` });
+      }
+
       const files = response.data.files || [];
+
+      // If first page and no files, might be permission issue
+      if (pageCount === 1 && files.length === 0 && !response.data.nextPageToken) {
+        return res.status(400).json({ error: "No files found in folder. Make sure the folder is public and contains images." });
+      }
 
       // Filter only images
       const images = files.filter(
