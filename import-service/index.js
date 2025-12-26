@@ -12,6 +12,11 @@ app.use("/import", importRoutes);
 app.use("/images", imagesRoutes);
 app.use(express.static(path.join(__dirname, "../frontend")));
 
+// Serve index.html at root URL
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../frontend/index.html"));
+});
+
 connectQueue()
   .then(() => {
     app.listen(3000, () => {
