@@ -129,6 +129,10 @@ router.post("/google-drive", async (req, res) => {
 
   } catch (err) {
     console.error("Import error:", err.message);
+    if (err.response) {
+      console.error("API response status:", err.response.status);
+      console.error("API response data:", err.response.data);
+    }
     res.status(500).json({ error: err.message });
   }
 });
