@@ -1,32 +1,11 @@
 version: '3.8'
 
 services:
-  postgres:
-    image: postgres:15-alpine
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: images_data
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres_data:/var/lib/postgresql/data
-      - ./db.sql:/docker-entrypoint-initdb.d/init.sql
-
-  rabbitmq:
-    image: rabbitmq:3-management-alpine
-    ports:
-      - "5672:5672"
-      - "15672:15672"
-
   import-service:
     build:
       context: ./import-service
     ports:
       - "3000:3000"
-    depends_on:
-      - postgres
-      - rabbitmq
     env_file:
       - ./import-service/.env
     volumes:
@@ -35,9 +14,6 @@ services:
   worker-service:
     build:
       context: ./worker-service
-    depends_on:
-      - postgres
-      - rabbitmq
     env_file:
       - ./worker-service/.env
 
