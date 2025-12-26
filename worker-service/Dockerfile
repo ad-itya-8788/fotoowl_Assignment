@@ -2,9 +2,9 @@ FROM node:18-alpine
 
 WORKDIR /app
 
-COPY package*.json ./
+COPY worker-service/package*.json ./
 RUN npm install
 
-COPY . .
+COPY worker-service/ .
 
 CMD ["node", "worker.js"]

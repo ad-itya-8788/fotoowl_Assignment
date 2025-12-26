@@ -3,17 +3,17 @@ version: '3.8'
 services:
   import-service:
     build:
-      context: ./import-service
+      context: .
+      dockerfile: import-service/Dockerfile
     ports:
       - "3000:3000"
     env_file:
       - ./import-service/.env
-    volumes:
-      - ./frontend:/app/../frontend
 
   worker-service:
     build:
-      context: ./worker-service
+      context: .
+      dockerfile: worker-service/Dockerfile
     env_file:
       - ./worker-service/.env
 
