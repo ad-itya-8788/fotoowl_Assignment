@@ -8,11 +8,11 @@ require("dotenv").config();
 // DATABASE SETUP
 // ============================================
 const pool = new Pool({
-  host: "localhost",
-  port: 5432,
-  user: "postgres",
-  password: "1234",
-  database: "images_data",
+  host: process.env.DB_HOST || "localhost",
+  port: process.env.DB_PORT || 5432,
+  user: process.env.DB_USER || "postgres",
+  password: process.env.DB_PASSWORD || "1234",
+  database: process.env.DB_NAME || "images_data",
 });
 
 // ============================================
@@ -105,7 +105,7 @@ async function updateDatabase(googleDriveId, cdnUrl) {
 // ============================================
 async function startWorker() {
   // Connect to RabbitMQ
-  const connection = await amqp.connect("amqp://localhost");
+  const connection = await amqp.connect(process.env.RABBITMQ_URL || "amqp://localhost");
   const channel = await connection.createChannel();
   await channel.assertQueue("image_jobs");
 
